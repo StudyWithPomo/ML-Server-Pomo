@@ -1,0 +1,28 @@
+[project]
+name = "pomo-companion"
+version = "0.1.0"
+description = "Pomo study companion: webcam focus tracking daemon"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "opencv-contrib-python",
+    "mediapipe==0.10.21",
+    "numpy",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+pomo = "pomo.main:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
