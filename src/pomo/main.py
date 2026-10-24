@@ -11,16 +11,17 @@ import cv2
 
 from .capture import Webcam
 from .focus import FocusConfig, FocusEngine, FocusResult
+from .preview import draw_overlay
 from .signals import VisionSignals
 from .vision import FaceTracker
 from .windows import StubWindowSource, WindowSource
 
 
-def _preview(frame, res: FocusResult, sig: VisionSignals) -> int:
+def _preview(frame, res: FocusResult, sig: VisionSignals, ear_closed: float) -> int:
+    draw_overlay(frame, sig, res.state, ear_closed)
     lines = [
         f"focus {res.score}  {res.state}",
         f"reason: {res.reason}",
-        f"yaw {sig.yaw_deg:.0f}  pitch {sig.pitch_deg:.0f}  ear {sig.ear:.2f}",
     ]
     if res.state == "calibrating":
         lines.append("calibrating: look at the screen")
@@ -88,7 +89,7 @@ def main(argv: list[str] | None = None) -> int:
                     )
 
                 if args.preview:
-                    key = _preview(frame, res, sig)
+                    key = _preview(frame, res, sig, engine.cfg.ear_closed)
                     if key == ord("q"):
                         break
                     if key == ord("c"):

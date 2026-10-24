@@ -4,7 +4,7 @@ from __future__ import annotations
 import cv2
 import numpy as np
 
-from .signals import NO_FACE, VisionSignals
+from .signals import FaceOverlay, NO_FACE, VisionSignals
 
 # MediaPipe FaceMesh landmark indices.
 POSE_IDX = (1, 152, 33, 263, 61, 291)  # nose, chin, eye corners, mouth corners
@@ -87,6 +87,19 @@ class FaceTracker:
         ear = (eye_aspect_ratio(pts[list(LEFT_EYE)]) + eye_aspect_ratio(pts[list(RIGHT_EYE)])) / 2.0
 
         y_min, y_max = float(pts[:, 1].min()), float(pts[:, 1].max())
+
+        # Build the face overlay (pixel coords) for the preview.
+        bbox = (
+            int(float(pts[:, 0].min())),
+            int(float(pts[:, 1].min())),
+            int(float(pts[:, 0].max())),
+            int(float(pts[:, 1].max())),
+        )
+        nose = (int(pts[1, 0]), int(pts[1, 1]))
+        left_eye = tuple((int(x), int(y)) for x, y in pts[list(LEFT_EYE)])
+        right_eye = tuple((int(x), int(y)) for x, y in pts[list(RIGHT_EYE)])
+        overlay = FaceOverlay(bbox=bbox, nose=nose, left_eye=left_eye, right_eye=right_eye)
+
         return VisionSignals(
             face_present=True,
             yaw_deg=yaw,
@@ -94,4 +107,5 @@ class FaceTracker:
             ear=ear,
             face_size=(y_max - y_min) / h,
             face_y=((y_max + y_min) / 2.0) / h,
+            overlay=overlay,
         )

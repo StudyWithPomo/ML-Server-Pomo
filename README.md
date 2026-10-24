@@ -13,6 +13,8 @@ Frames are processed in memory only, never saved or sent anywhere.
     uv run python -m pomo --hz 2        # JSON lines only
     uv run pytest
 
+Preview legend: box colour = state, white line from the nose = head direction, eye outlines turn red when EAR is below the threshold.
+
 Output: `{"ts", "focus": 0-100, "state", "reason", "window", "yaw", "pitch", "ear"}`
 - state: calibrating | focused | drifting | unfocused
 - reason: absent | drowsy | looking_away | slouching | bad_window | null
